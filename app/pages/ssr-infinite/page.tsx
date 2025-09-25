@@ -1,5 +1,5 @@
 import { prismaPrefetchInfiniteQuery } from '@/app/hooks/use-prisma-query';
-import { getQueryClient } from '@/app/provider/get-query-client';
+import { getQueryClient } from '@/components/provider/get-query-client';
 import UsersInfinite from '@/components/additional/users-infinite';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 import React from 'react';

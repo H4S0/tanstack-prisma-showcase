@@ -8,12 +8,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu';
+import { Button } from '../ui/button';
+import {
+  LoginLink,
+  LogoutLink,
+  RegisterLink,
+} from '@kinde-oss/kinde-auth-nextjs/components';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-const Navbar = () => {
+const Navbar = async () => {
+  const { isAuthenticated } = getKindeServerSession();
+  const isUserAuthenticated = await isAuthenticated();
+
   return (
     <nav className="flex justify-between items-center p-4 bg-gray-800 text-white">
       <h2 className="font-bold text-lg">Tasma showcase</h2>
-      <div className="flex gap-4">
+      <div className="flex items-center gap-4">
         <Link href="/" className="hover:underline">
           Home
         </Link>
@@ -61,6 +71,16 @@ const Navbar = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {isUserAuthenticated ? (
+          <Button>
+            <LogoutLink>Log out</LogoutLink>
+          </Button>
+        ) : (
+          <Button>
+            <RegisterLink>Register</RegisterLink>
+          </Button>
+        )}
       </div>
     </nav>
   );

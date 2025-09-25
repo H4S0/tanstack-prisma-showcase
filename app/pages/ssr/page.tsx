@@ -1,5 +1,5 @@
 import { prismaPrefetchQuery } from '@/app/hooks/use-prisma-query';
-import { getQueryClient } from '@/app/provider/get-query-client';
+import { getQueryClient } from '@/components/provider/get-query-client';
 import Users from '@/components/additional/users';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
