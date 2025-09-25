@@ -6,7 +6,7 @@ export async function GET() {
   const users = await prismaApiHandler({
     model: 'user',
     operation: 'findMany',
-    args: { where: { email: 'hasanalic10@gmail.com' } },
+    args: { where: { email: 'example@email.test' } },
   });
 
   return NextResponse.json(users);
