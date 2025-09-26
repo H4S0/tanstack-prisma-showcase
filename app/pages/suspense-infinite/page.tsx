@@ -7,7 +7,7 @@ export default function SuspenseInfinite() {
   const PAGE_SIZE = 5;
 
   /* Usage of query options with prisma suspense infinite query: 
-  const queryOpts = prismaQueryOptions({ model: 'user', operation: 'findMany', args: { take: PAGE_SIZE, }}); 
+  const queryOpts = prismaQueryOptions({ model: 'post', operation: 'findMany', args: { take: PAGE_SIZE, }}); 
   const { data, 
   queryKey, 
   fetchNextPage, 
@@ -23,7 +23,7 @@ export default function SuspenseInfinite() {
     isFetchingNextPage,
     isFetching,
   } = usePrismaSuspenseInfiniteQuery(PAGE_SIZE, {
-    model: 'user',
+    model: 'post',
     operation: 'findMany',
     args: {
       take: PAGE_SIZE,
@@ -32,28 +32,28 @@ export default function SuspenseInfinite() {
 
   return (
     <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Infinite Users (Suspense)</h1>
+      <h1 className="text-2xl font-bold mb-4">Infinite Posts (Suspense)</h1>
       <p className="mb-6 text-gray-600">
         This list is powered by <code>usePrismaSuspenseInfiniteQuery</code>.
-        Users are fetched in pages and you can load more with the button below.
+        Posts are fetched in pages and you can load more with the button below.
       </p>
 
       <div className="space-y-2">
         {data.pages.map((page, i) => {
-          const users = page?.data ?? [];
+          const posts = page?.data ?? [];
           return (
             <div key={i}>
-              {users.length > 0 ? (
-                users.map((user) => (
+              {posts.length > 0 ? (
+                posts.map((post) => (
                   <div
-                    key={user.id}
+                    key={post.id}
                     className="p-4 bg-white rounded shadow mb-2"
                   >
-                    <strong>{user.firstName}</strong> — {user.email}
+                    <strong>{post.title}</strong> — {post.content}
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 italic">No users found</p>
+                <p className="text-gray-500 italic">No posts found</p>
               )}
             </div>
           );
@@ -64,10 +64,10 @@ export default function SuspenseInfinite() {
           disabled={!hasNextPage || isFetchingNextPage}
         >
           {isFetchingNextPage
-            ? 'Loading more users...'
+            ? 'Loading more posts...'
             : hasNextPage
-            ? 'Load More Users'
-            : 'No More Users'}
+            ? 'Load More posts'
+            : 'No More posts'}
         </Button>
 
         {isFetching && !isFetchingNextPage && (

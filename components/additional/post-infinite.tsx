@@ -3,7 +3,7 @@
 import { usePrismaInfiniteQuery } from '@/app/hooks/use-prisma-query';
 import { Button } from '../ui/button';
 
-export default function UsersInfinite() {
+export default function PostsInfinite() {
   const PAGE_SIZE = 5;
 
   const {
@@ -15,7 +15,7 @@ export default function UsersInfinite() {
     status,
     error,
   } = usePrismaInfiniteQuery(PAGE_SIZE, {
-    model: 'user',
+    model: 'post',
     operation: 'findMany',
     args: {
       take: PAGE_SIZE,
@@ -33,17 +33,17 @@ export default function UsersInfinite() {
   return (
     <div className="space-y-2">
       {infinitedata.pages.map((page, i) => {
-        const users = page?.data ?? [];
+        const posts = page?.data ?? [];
         return (
           <div key={i}>
-            {users.length > 0 ? (
-              users.map((user) => (
-                <div key={user.id} className="p-4 bg-white rounded shadow mb-2">
-                  <strong>{user.username}</strong> — {user.email}
+            {posts.length > 0 ? (
+              posts.map((post) => (
+                <div key={post.id} className="p-4 bg-white rounded shadow mb-2">
+                  <strong>{post.title}</strong> — {post.content}
                 </div>
               ))
             ) : (
-              <p>No users found</p>
+              <p>No posts found</p>
             )}
           </div>
         );
@@ -57,7 +57,7 @@ export default function UsersInfinite() {
           ? 'Loading more...'
           : hasNextPage
           ? 'Load More'
-          : 'No More Users'}
+          : 'No More Posts'}
       </Button>
 
       {isFetching && !isFetchingNextPage && (
