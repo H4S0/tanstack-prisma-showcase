@@ -10,7 +10,6 @@ import {
 } from '../ui/dropdown-menu';
 import { Button } from '../ui/button';
 import {
-  LoginLink,
   LogoutLink,
   RegisterLink,
 } from '@kinde-oss/kinde-auth-nextjs/components';
@@ -29,6 +28,9 @@ const Navbar = async () => {
         </Link>
         <Link href="/pages/table-pagination/" className="hover:underline">
           Pagination
+        </Link>
+        <Link href="/pages/search/" className="hover:underline">
+          Search
         </Link>
 
         <DropdownMenu>

@@ -7,7 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
-  const { data, isLoading, queryKey } = usePrismaQuery({
+  const { data, isLoading } = usePrismaQuery({
     model: 'user',
     operation: 'findMany',
     args: searchTerm
@@ -20,9 +20,8 @@ export default function SearchPage() {
   });
 
   return (
-    <div>
-      <h1>User Search</h1>
-
+    <div className="max-w-3xl mx-auto px-6 py-10 space-y-5">
+      <h1 className="text-xl font-semibold">Search</h1>
       <Input
         type="text"
         placeholder="Type first name..."
