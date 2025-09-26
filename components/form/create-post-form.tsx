@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -21,10 +20,10 @@ import { toast } from 'sonner';
 
 const CreatePostSchema = z.object({
   title: z.string(),
-  content: z.email(),
+  content: z.string(),
 });
 
-const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
+const CreatePostForm = ({ queryKey }: { queryKey: QueryKey }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm<z.infer<typeof CreatePostSchema>>({
@@ -42,7 +41,7 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
       { data },
       {
         onSuccess: (response) => {
-          toast.success('User created successfully!');
+          toast.success('Post created successfully!');
           setIsOpen(false);
           form.reset({
             title: '',
@@ -50,7 +49,7 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
           });
         },
         onError: (error) => {
-          toast.error(`Error creating user: ${error.message}`);
+          toast.error(`Error creating post: ${error.message}`);
         },
       }
     );
@@ -59,15 +58,11 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create user</Button>
+        <Button variant="outline">Create post</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Create post form</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -89,7 +84,7 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Post content</FormLabel>
                   <FormControl>
                     <Input placeholder="example content" {...field} />
                   </FormControl>
@@ -97,7 +92,7 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
               )}
             />
 
-            <Button>
+            <Button disabled={createPost.isPending}>
               {createPost.isPending ? 'Creating post...' : 'Create post'}
             </Button>
           </form>
@@ -107,4 +102,4 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
   );
 };
 
-export default CreateUserForm;
+export default CreatePostForm;

@@ -6,30 +6,29 @@ import { QueryKey, useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 
-export type User = {
+export type Post = {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  title: string;
+  content: string;
   createdAt: Date;
 };
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Post>[] = [
   {
-    accessorKey: 'firstName',
+    accessorKey: 'title',
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Firstname <ArrowUpDown />
+        Title <ArrowUpDown />
       </Button>
     ),
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: 'email',
-    header: () => <span>Email</span>,
+    accessorKey: 'content',
+    header: () => <span>Content</span>,
     cell: (info) => info.getValue(),
   },
   {
@@ -43,7 +42,7 @@ export const columns: ColumnDef<User>[] = [
     cell: ({ row, table }) => {
       return (
         <DeleteUserButton
-          userId={row.original.id}
+          postId={row.original.id}
           queryKey={table.options.meta?.queryKey}
         />
       );
@@ -51,18 +50,18 @@ export const columns: ColumnDef<User>[] = [
   },
 ];
 
-type DeleteUserButtonProps = {
-  userId: string;
+type DeletePostButtonProps = {
+  postId: string;
   queryKey: QueryKey;
 };
 
-function DeleteUserButton({ userId, queryKey }: DeleteUserButtonProps) {
+function DeleteUserButton({ postId, queryKey }: DeletePostButtonProps) {
   const queryClient = useQueryClient();
-  const deleteUser = usePrismaMutation(
+  const deletePost = usePrismaMutation(
     {
-      model: 'user',
+      model: 'post',
       operation: 'delete',
-      args: { where: { id: userId } },
+      args: { where: { id: postId } },
       queryKey,
     },
     {
@@ -77,7 +76,7 @@ function DeleteUserButton({ userId, queryKey }: DeleteUserButtonProps) {
 
         console.log('All query keys in cache:', allKeys);
 
-        console.log('Mutation applied to queryKey:', deleteUser.context);
+        console.log('Mutation applied to queryKey:', deletePost.context);
       },
     }
   );
@@ -86,13 +85,13 @@ function DeleteUserButton({ userId, queryKey }: DeleteUserButtonProps) {
     <Button
       variant="destructive"
       onClick={() =>
-        deleteUser.mutate({
-          where: { id: userId },
+        deletePost.mutate({
+          where: { id: postId },
         })
       }
-      disabled={deleteUser.isPending}
+      disabled={deletePost.isPending}
     >
-      {deleteUser.isPending ? 'Deleting...' : 'Delete'}
+      {deletePost.isPending ? 'Deleting...' : 'Delete'}
     </Button>
   );
 }
