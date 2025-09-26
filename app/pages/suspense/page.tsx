@@ -20,7 +20,7 @@ function UsersList() {
           key={user.id}
           className="p-4 rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition"
         >
-          <p className="font-semibold text-gray-800">{user.username}</p>
+          <p className="font-semibold text-gray-800">{user.firstName}</p>
           <p className="text-gray-600 text-sm">{user.email}</p>
         </li>
       ))}

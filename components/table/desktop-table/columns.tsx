@@ -8,20 +8,21 @@ import { ArrowUpDown } from 'lucide-react';
 
 export type User = {
   id: string;
-  username: string;
+  firstName: string;
+  lastName: string;
   email: string;
   createdAt: Date;
 };
 
 export const columns: ColumnDef<User>[] = [
   {
-    accessorKey: 'username',
+    accessorKey: 'firstName',
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
       >
-        Username <ArrowUpDown />
+        Firstname <ArrowUpDown />
       </Button>
     ),
     cell: (info) => info.getValue(),
