@@ -23,8 +23,8 @@ export async function GET() {
       args: {
         data: {
           id: user.id,
-          firstName: user.family_name,
-          lastName: user.given_name,
+          firstName: user.given_name,
+          lastName: user.family_name,
           email: user.email,
         },
       },
