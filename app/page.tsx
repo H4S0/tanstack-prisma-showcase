@@ -3,7 +3,7 @@
 import React from 'react';
 import { usePrismaQuery } from './hooks/use-prisma-query';
 import { Skeleton } from '@/components/ui/skeleton';
-import CreateUserForm from '@/components/form/create-user-form';
+import CreateUserForm from '@/components/form/create-post-form';
 
 export default function Home() {
   /*

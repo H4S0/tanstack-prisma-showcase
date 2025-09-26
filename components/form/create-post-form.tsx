@@ -19,34 +19,34 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 
-const CreateUserSchema = z.object({
-  username: z.string(),
-  email: z.email(),
+const CreatePostSchema = z.object({
+  title: z.string(),
+  content: z.email(),
 });
 
 const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof CreateUserSchema>>({
-    resolver: zodResolver(CreateUserSchema),
+  const form = useForm<z.infer<typeof CreatePostSchema>>({
+    resolver: zodResolver(CreatePostSchema),
   });
 
-  const createUser = usePrismaMutation({
-    model: 'user',
+  const createPost = usePrismaMutation({
+    model: 'post',
     operation: 'create',
     queryKey,
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof CreateUserSchema>> = (data) => {
-    createUser.mutate(
+  const onSubmit: SubmitHandler<z.infer<typeof CreatePostSchema>> = (data) => {
+    createPost.mutate(
       { data },
       {
         onSuccess: (response) => {
           toast.success('User created successfully!');
           setIsOpen(false);
           form.reset({
-            username: '',
-            email: '',
+            title: '',
+            content: '',
           });
         },
         onError: (error) => {
@@ -72,33 +72,33 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
-              name="username"
+              name="title"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Post title</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} />
+                    <Input placeholder="Programmers day" {...field} />
                   </FormControl>
                 </FormItem>
               )}
             />
 
             <FormField
-              name="email"
+              name="content"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="test@example.ta" {...field} />
+                    <Input placeholder="example content" {...field} />
                   </FormControl>
                 </FormItem>
               )}
             />
 
             <Button>
-              {createUser.isPending ? 'Creating user...' : 'Create user'}
+              {createPost.isPending ? 'Creating post...' : 'Create post'}
             </Button>
           </form>
         </Form>

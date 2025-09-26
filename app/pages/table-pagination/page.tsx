@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/pagination';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DebouncedInput } from '@/components/ui/debounced-input';
-import CreateUserForm from '@/components/form/create-user-form';
+import CreateUserForm from '@/components/form/create-post-form';
 
 export default function DemoPage() {
   const [globalSearch, setGlobalSearch] = useState('');
