@@ -1,6 +1,6 @@
 import { prismaPrefetchQuery } from '@/app/hooks/use-prisma-query';
 import { getQueryClient } from '@/components/provider/get-query-client';
-import Users from '@/components/additional/users';
+import Users from '@/components/additional/posts';
 import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
 
 export default async function SsrFetching() {
@@ -11,7 +11,7 @@ export default async function SsrFetching() {
   prismaPrefetchQuery returns the generated queryKey
   so you could inspect cached data like:
   const queryKey = await prismaPrefetchQuery(queryClient, {
-    model: 'user', 
+    model: 'post', 
     operation: 'findMany' 
    });
   
@@ -19,7 +19,7 @@ export default async function SsrFetching() {
     */
 
   await prismaPrefetchQuery(queryClient, {
-    model: 'user',
+    model: 'post',
     operation: 'findMany',
   });
 
@@ -30,7 +30,7 @@ export default async function SsrFetching() {
           SSR Prefetch Example
         </h1>
         <p className="mb-6 text-gray-600">
-          The users below are fetched{' '}
+          The posts below are fetched{' '}
           <span className="font-semibold">on the server</span> using{' '}
           <code>prismaPrefetchQuery</code> and then hydrated on the client with
           React Query.

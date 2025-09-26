@@ -8,12 +8,12 @@ export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const { data, isLoading } = usePrismaQuery({
-    model: 'user',
+    model: 'post',
     operation: 'findMany',
     args: searchTerm
       ? {
           where: {
-            OR: [{ firstName: { search: searchTerm } }],
+            OR: [{ title: { search: searchTerm } }],
           },
         }
       : undefined,
@@ -24,7 +24,7 @@ export default function SearchPage() {
       <h1 className="text-xl font-semibold">Search</h1>
       <Input
         type="text"
-        placeholder="Type first name..."
+        placeholder="Type post title..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="border px-2 py-1 mb-4 w-full max-w-sm"
@@ -43,18 +43,18 @@ export default function SearchPage() {
 
       {data?.length ? (
         <ul className="space-y-3">
-          {data.map((user) => (
+          {data.map((post) => (
             <li
-              key={user.id}
+              key={post.id}
               className="p-4 rounded-lg border border-gray-200 bg-white shadow-sm hover:shadow-md transition"
             >
-              <p className="font-semibold text-gray-800">{user.firstName}</p>
-              <p className="text-gray-600 text-sm">{user.email}</p>
+              <p className="font-semibold text-gray-800">{post.title}</p>
+              <p className="text-gray-600 text-sm">{post.content}</p>
             </li>
           ))}
         </ul>
       ) : (
-        !isLoading && <p className="text-gray-600">No users yet</p>
+        !isLoading && <p className="text-gray-600">No posts yet</p>
       )}
     </div>
   );

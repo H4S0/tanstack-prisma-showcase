@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,38 +18,38 @@ import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { toast } from 'sonner';
 
-const CreateUserSchema = z.object({
-  username: z.string(),
-  email: z.email(),
+const CreatePostSchema = z.object({
+  title: z.string(),
+  content: z.string(),
 });
 
-const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
+const CreatePostForm = ({ queryKey }: { queryKey: QueryKey }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof CreateUserSchema>>({
-    resolver: zodResolver(CreateUserSchema),
+  const form = useForm<z.infer<typeof CreatePostSchema>>({
+    resolver: zodResolver(CreatePostSchema),
   });
 
-  const createUser = usePrismaMutation({
-    model: 'user',
+  const createPost = usePrismaMutation({
+    model: 'post',
     operation: 'create',
     queryKey,
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof CreateUserSchema>> = (data) => {
-    createUser.mutate(
+  const onSubmit: SubmitHandler<z.infer<typeof CreatePostSchema>> = (data) => {
+    createPost.mutate(
       { data },
       {
         onSuccess: (response) => {
-          toast.success('User created successfully!');
+          toast.success('Post created successfully!');
           setIsOpen(false);
           form.reset({
-            username: '',
-            email: '',
+            title: '',
+            content: '',
           });
         },
         onError: (error) => {
-          toast.error(`Error creating user: ${error.message}`);
+          toast.error(`Error creating post: ${error.message}`);
         },
       }
     );
@@ -59,46 +58,42 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Create user</Button>
+        <Button variant="outline">Create post</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Create post form</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
-              name="username"
+              name="title"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Username</FormLabel>
+                  <FormLabel>Post title</FormLabel>
                   <FormControl>
-                    <Input placeholder="username123" {...field} />
+                    <Input placeholder="Programmers day" {...field} />
                   </FormControl>
                 </FormItem>
               )}
             />
 
             <FormField
-              name="email"
+              name="content"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Post content</FormLabel>
                   <FormControl>
-                    <Input placeholder="test@example.ta" {...field} />
+                    <Input placeholder="example content" {...field} />
                   </FormControl>
                 </FormItem>
               )}
             />
 
-            <Button>
-              {createUser.isPending ? 'Creating user...' : 'Create user'}
+            <Button disabled={createPost.isPending}>
+              {createPost.isPending ? 'Creating post...' : 'Create post'}
             </Button>
           </form>
         </Form>
@@ -107,4 +102,4 @@ const CreateUserForm = ({ queryKey }: { queryKey: QueryKey }) => {
   );
 };
 
-export default CreateUserForm;
+export default CreatePostForm;

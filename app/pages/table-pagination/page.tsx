@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/pagination';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DebouncedInput } from '@/components/ui/debounced-input';
-import CreateUserForm from '@/components/form/create-user-form';
+import CreatePostForm from '@/components/form/create-post-form';
 
 export default function DemoPage() {
   const [globalSearch, setGlobalSearch] = useState('');
@@ -30,7 +30,7 @@ export default function DemoPage() {
     isFetching,
     queryKey,
   } = usePrimaPaginatedQuery({
-    model: 'user',
+    model: 'post',
     operation: 'findMany',
     page,
     pageSize,
@@ -43,7 +43,7 @@ export default function DemoPage() {
     <div className="container mx-auto py-10 w-full">
       <Card className="p-3">
         <CardHeader className="flex items-center gap-2">
-          <CreateUserForm queryKey={queryKey} />
+          <CreatePostForm queryKey={queryKey} />
           <DebouncedInput
             value={globalSearch ?? ''}
             onChange={(value) => setGlobalSearch(String(value))}
