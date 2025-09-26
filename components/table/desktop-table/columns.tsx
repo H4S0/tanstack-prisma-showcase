@@ -41,9 +41,10 @@ export const columns: ColumnDef<Post>[] = [
     header: () => <span>Actions</span>,
     cell: ({ row, table }) => {
       return (
-        <DeleteUserButton
+        <DeletePostButton
           postId={row.original.id}
           queryKey={table.options.meta?.queryKey}
+          onDeleteSuccess={table.options.meta?.onDeleteSuccess}
         />
       );
     },
@@ -53,10 +54,14 @@ export const columns: ColumnDef<Post>[] = [
 type DeletePostButtonProps = {
   postId: string;
   queryKey: QueryKey;
+  onSuccess?: () => void;
 };
 
-function DeleteUserButton({ postId, queryKey }: DeletePostButtonProps) {
-  const queryClient = useQueryClient();
+function DeletePostButton({
+  postId,
+  queryKey,
+  onSuccess,
+}: DeletePostButtonProps) {
   const deletePost = usePrismaMutation(
     {
       model: 'post',
@@ -65,18 +70,8 @@ function DeleteUserButton({ postId, queryKey }: DeletePostButtonProps) {
       queryKey,
     },
     {
-      onSuccess: (data, variables) => {
-        console.log('Deleted:', data);
-        console.log('Variables:', variables);
-
-        const allKeys = queryClient
-          .getQueryCache()
-          .getAll()
-          .map((q) => q.queryKey);
-
-        console.log('All query keys in cache:', allKeys);
-
-        console.log('Mutation applied to queryKey:', deletePost.context);
+      onSuccess: () => {
+        onSuccess?.(); // <-- notify parent table
       },
     }
   );

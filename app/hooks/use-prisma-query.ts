@@ -131,7 +131,7 @@ export function usePrismaInfiniteQuery<
   });
 }
 
-export function usePrimaPaginatedQuery<
+export function usePrismaPaginatedQuery<
   TModel extends keyof PrismaClient,
   TArgs = OperationArgs<PrismaClient[TModel], 'findMany'>,
   TReturn = Awaited<ReturnType<PrismaClient[TModel]['findMany']>>
@@ -283,33 +283,18 @@ interface MutationStrategy {
 
 const mutationStrategies: Record<string, MutationStrategy> = {
   create: {
-    onMutate: (oldData: any, variables: any) => {
-      const optimisticUser = {
-        ...variables.data,
-        id: `temp-${Date.now()}`,
-      };
-
-      if (!oldData) return [optimisticUser];
-      if (oldData.data) {
-        return { ...oldData, data: [...oldData.data, optimisticUser] };
-      }
-      return [...oldData, optimisticUser];
-    },
     onSuccess: (oldData: any, data: any) => {
       if (!oldData) return [data];
       if (oldData.data) {
         return {
           ...oldData,
-          data: oldData.data.map((item: any) =>
-            String(item.id).startsWith('temp') ? data : item
-          ),
+          data: [...oldData.data, data],
         };
       }
-      return oldData.map((item: any) =>
-        String(item.id).startsWith('temp') ? data : item
-      );
+      return [...oldData, data];
     },
   },
+
   delete: {
     onMutate: (oldData: any, variables: any) => {
       if (!oldData) return oldData;
@@ -324,6 +309,7 @@ const mutationStrategies: Record<string, MutationStrategy> = {
       return oldData.filter((item: any) => item.id !== variables.where.id);
     },
   },
+
   update: {
     onMutate: (oldData: any, variables: any) => {
       if (!oldData) return oldData;
@@ -356,30 +342,28 @@ const mutationStrategies: Record<string, MutationStrategy> = {
       );
     },
   },
+
   upsert: {
-    onMutate: (oldData: any) => {
-      return oldData;
-    },
+    onMutate: (oldData: any) => oldData,
   },
 } as const;
 
 export function usePrismaMutation<
   TModel extends keyof PrismaClient,
-  TOperation extends FunctionKeys<PrismaClient[TModel]> &
-    keyof typeof mutationStrategies,
-  TArgs = OperationArgs<PrismaClient[TModel], TOperation>,
-  TReturn = OperationReturn<PrismaClient[TModel], TOperation>
+  TOperation extends keyof typeof mutationStrategies,
+  TArgs = any,
+  TReturn = any
 >(
-  baseConfig: PrismaQueryConfig<TModel, TOperation, TArgs> & {
+  baseConfig: {
+    model: TModel;
+    operation: TOperation;
+    args?: TArgs;
     queryKey: QueryKey;
   },
   options?: UseMutationOptions<TReturn, Error, TArgs>
 ) {
   const queryClient = useQueryClient();
-
-  const strategy = mutationStrategies[baseConfig.operation] as
-    | MutationStrategy
-    | undefined;
+  const strategy = mutationStrategies[baseConfig.operation];
 
   return useMutation<TReturn, Error, TArgs>({
     mutationFn: (variables: TArgs) =>
@@ -429,7 +413,6 @@ export function usePrismaMutation<
     ...options,
   });
 }
-
 export function prismaQueryOptions<
   TModel extends keyof PrismaClient,
   TOperation extends FunctionKeys<PrismaClient[TModel]>,

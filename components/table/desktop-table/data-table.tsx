@@ -25,6 +25,7 @@ interface DataTableProps<TData, TValue> {
   queryKey: QueryKey;
   setGlobalSearch: (search: string) => void;
   globalFilter: string;
+  onDeleteSuccess: () => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -33,6 +34,7 @@ export function DataTable<TData, TValue>({
   queryKey,
   setGlobalSearch,
   globalFilter,
+  onDeleteSuccess,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -46,6 +48,7 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     meta: {
       queryKey: queryKey,
+      onDeleteSuccess: onDeleteSuccess,
     },
   });
 

@@ -2,8 +2,7 @@
 
 import { columns } from '@/components/table/desktop-table/columns';
 import { DataTable } from '@/components/table/desktop-table/data-table';
-import { usePrimaPaginatedQuery } from '../../hooks/use-prisma-query';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Pagination,
@@ -15,10 +14,10 @@ import {
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DebouncedInput } from '@/components/ui/debounced-input';
 import CreatePostForm from '@/components/form/create-post-form';
+import { usePrismaPaginatedQuery } from '@/app/hooks/use-prisma-query';
 
 export default function DemoPage() {
   const [globalSearch, setGlobalSearch] = useState('');
-
   const [page, setPage] = useState(1);
   const pageSize = 5;
 
@@ -29,7 +28,8 @@ export default function DemoPage() {
     error,
     isFetching,
     queryKey,
-  } = usePrimaPaginatedQuery({
+    refetch,
+  } = usePrismaPaginatedQuery({
     model: 'post',
     operation: 'findMany',
     page,
@@ -38,6 +38,10 @@ export default function DemoPage() {
 
   const totalCount = paginatedData?.totalCount ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  const handleDeleteSuccess = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <div className="container mx-auto py-10 w-full">
@@ -72,6 +76,7 @@ export default function DemoPage() {
                   queryKey={queryKey}
                   setGlobalSearch={setGlobalSearch}
                   globalFilter={globalSearch}
+                  onDeleteSuccess={handleDeleteSuccess}
                 />
 
                 {isFetching && !isLoading && (
