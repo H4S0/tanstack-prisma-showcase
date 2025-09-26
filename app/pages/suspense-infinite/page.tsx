@@ -49,7 +49,7 @@ export default function SuspenseInfinite() {
                     key={user.id}
                     className="p-4 bg-white rounded shadow mb-2"
                   >
-                    <strong>{user.username}</strong> — {user.email}
+                    <strong>{user.firstName}</strong> — {user.email}
                   </div>
                 ))
               ) : (
