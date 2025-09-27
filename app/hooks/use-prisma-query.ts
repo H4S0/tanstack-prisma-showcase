@@ -350,9 +350,10 @@ const mutationStrategies: Record<string, MutationStrategy> = {
 
 export function usePrismaMutation<
   TModel extends keyof PrismaClient,
-  TOperation extends keyof typeof mutationStrategies,
-  TArgs = any,
-  TReturn = any
+  TOperation extends keyof typeof mutationStrategies &
+    keyof PrismaClient[TModel],
+  TArgs = OperationArgs<PrismaClient[TModel], TOperation>,
+  TReturn = OperationReturn<PrismaClient[TModel], TOperation>
 >(
   baseConfig: {
     model: TModel;

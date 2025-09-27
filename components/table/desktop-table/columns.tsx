@@ -44,7 +44,7 @@ export const columns: ColumnDef<Post>[] = [
         <DeletePostButton
           postId={row.original.id}
           queryKey={table.options.meta?.queryKey}
-          onDeleteSuccess={table.options.meta?.onDeleteSuccess}
+          onSuccess={table.options.meta?.onDeleteSuccess}
         />
       );
     },
@@ -71,7 +71,7 @@ function DeletePostButton({
     },
     {
       onSuccess: () => {
-        onSuccess?.(); // <-- notify parent table
+        onSuccess?.();
       },
     }
   );
