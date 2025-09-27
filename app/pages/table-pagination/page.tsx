@@ -15,8 +15,10 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { DebouncedInput } from '@/components/ui/debounced-input';
 import CreatePostForm from '@/components/form/create-post-form';
 import { usePrismaPaginatedQuery } from '@/app/hooks/use-prisma-query';
+import { RowSelectionState } from '@tanstack/react-table';
 
 export default function DemoPage() {
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [globalSearch, setGlobalSearch] = useState('');
   const [page, setPage] = useState(1);
   const pageSize = 5;
@@ -77,6 +79,8 @@ export default function DemoPage() {
                   setGlobalSearch={setGlobalSearch}
                   globalFilter={globalSearch}
                   onDeleteSuccess={handleDeleteSuccess}
+                  setRowSelection={setRowSelection}
+                  rowSelection={rowSelection}
                 />
 
                 {isFetching && !isLoading && (

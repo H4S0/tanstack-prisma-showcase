@@ -7,8 +7,8 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  RowSelectionState,
 } from '@tanstack/react-table';
-
 import {
   Table,
   TableBody,
@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { QueryKey } from '@tanstack/react-query';
+import { Dispatch, SetStateAction } from 'react';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,6 +27,8 @@ interface DataTableProps<TData, TValue> {
   setGlobalSearch: (search: string) => void;
   globalFilter: string;
   onDeleteSuccess: () => void;
+  rowSelection: RowSelectionState;
+  setRowSelection: Dispatch<SetStateAction<RowSelectionState>>;
 }
 
 export function DataTable<TData, TValue>({
@@ -35,20 +38,24 @@ export function DataTable<TData, TValue>({
   setGlobalSearch,
   globalFilter,
   onDeleteSuccess,
+  setRowSelection,
+  rowSelection,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
     columns,
-    state: { globalFilter },
+    state: { globalFilter, rowSelection },
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onGlobalFilterChange: setGlobalSearch,
+    onRowSelectionChange: setRowSelection,
     globalFilterFn: 'includesString',
+    enableRowSelection: true,
     manualPagination: true,
     meta: {
-      queryKey: queryKey,
-      onDeleteSuccess: onDeleteSuccess,
+      queryKey,
+      onDeleteSuccess,
     },
   });
 
@@ -58,27 +65,25 @@ export function DataTable<TData, TValue>({
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
+          {table.getRowModel().rows.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
+                data-state={row.getIsSelected() ? 'selected' : undefined}
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>

@@ -1,10 +1,11 @@
 'use client';
-
 import { usePrismaMutation } from '@/app/hooks/use-prisma-query';
 import { Button } from '@/components/ui/button';
-import { QueryKey, useQueryClient } from '@tanstack/react-query';
+import { Checkbox } from '@/components/ui/checkbox';
+import { QueryKey } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
+import React from 'react';
 
 export type Post = {
   id: string;
@@ -15,30 +16,65 @@ export type Post = {
 
 export const columns: ColumnDef<Post>[] = [
   {
-    accessorKey: 'title',
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-      >
-        Title <ArrowUpDown />
-      </Button>
+    id: 'select',
+    header: ({ table }) => (
+      <div className="flex justify-center">
+        <Checkbox
+          checked={
+            table.getIsAllPageRowsSelected() ||
+            (table.getIsSomePageRowsSelected() && 'indeterminate')
+          }
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      </div>
     ),
-    cell: (info) => info.getValue(),
+    cell: ({ row }) => (
+      <div className="flex justify-center">
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+  {
+    accessorKey: 'title',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="p-0 hover:bg-transparent"
+        >
+          Title
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => <div className="w-[200px]">{row.getValue('title')}</div>,
   },
   {
     accessorKey: 'content',
-    header: () => <span>Content</span>,
-    cell: (info) => info.getValue(),
+    header: 'Content',
+    cell: ({ row }) => (
+      <div className="max-w-[300px] truncate">{row.getValue('content')}</div>
+    ),
   },
   {
     accessorKey: 'createdAt',
-    header: () => <span>Created At</span>,
-    cell: (info) => info.getValue(),
+    header: 'Created At',
+    cell: ({ row }) => {
+      const date = new Date(row.getValue('createdAt'));
+      return date.toLocaleDateString();
+    },
   },
   {
-    accessorKey: 'action',
-    header: () => <span>Actions</span>,
+    id: 'actions',
+    header: 'Actions',
     cell: ({ row, table }) => {
       return (
         <DeletePostButton
@@ -48,6 +84,8 @@ export const columns: ColumnDef<Post>[] = [
         />
       );
     },
+    enableSorting: false,
+    enableHiding: false,
   },
 ];
 
@@ -79,11 +117,8 @@ function DeletePostButton({
   return (
     <Button
       variant="destructive"
-      onClick={() =>
-        deletePost.mutate({
-          where: { id: postId },
-        })
-      }
+      size="sm"
+      onClick={() => deletePost.mutate({ where: { id: postId } })}
       disabled={deletePost.isPending}
     >
       {deletePost.isPending ? 'Deleting...' : 'Delete'}
